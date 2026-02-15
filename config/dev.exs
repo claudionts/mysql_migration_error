@@ -5,12 +5,11 @@ config :mysql_migration_error_phx, MysqlMigrationErrorPhx.Repo,
   username: System.get_env("DB_USER", "app"),
   password: System.get_env("DB_PASSWORD", "apppass"),
   hostname: System.get_env("DB_HOST", "localhost"),
-  port: String.to_integer(System.get_env("DB_PORT", "3306")),
-  database: System.get_env("DB_NAME", "mysql_migration_error_dev"),
+  port: String.to_integer(System.get_env("DB_PORT", "5432")),
+  database: System.get_env("DB_NAME", "postgres_migration_error_dev"),
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
-
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
@@ -65,7 +64,6 @@ config :mysql_migration_error_phx, MysqlMigrationErrorPhxWeb.Endpoint,
       ~r"priv/gettext/.*\.po$",
       ~r"lib/mysql_migration_error_phx_web/router\.ex$",
       ~r"lib/mysql_migration_error_phx_web/(controllers|live|components)/.*\.(ex|heex)$"
-
     ]
   ]
 

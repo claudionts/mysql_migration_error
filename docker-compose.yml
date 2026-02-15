@@ -1,27 +1,17 @@
 services:
   db:
-    image: mariadb:11.7.2
-    container_name: mariadb_dev
+    image: postgres:16
+    container_name: postgres_dev
     environment:
-      MARIADB_ROOT_PASSWORD: rootpassword
-      MARIADB_DATABASE: mysql_migration_error_dev
-      MARIADB_USER: app
-      MARIADB_PASSWORD: apppass
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: apppass
+      POSTGRES_DB: postgres_migration_error_dev
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test:
-        [
-          "CMD",
-          "mariadb-admin",
-          "ping",
-          "-h",
-          "127.0.0.1",
-          "-uroot",
-          "-prootpassword",
-        ]
+      test: ["CMD-SHELL", "pg_isready -U app -d postgres_migration_error_dev"]
       interval: 5s
       timeout: 3s
       retries: 20
@@ -33,8 +23,8 @@ services:
       PHX_SERVER: "true"
       PORT: "4000"
       DB_HOST: db
-      DB_PORT: "3306"
-      DB_NAME: mysql_migration_error_dev
+      DB_PORT: "5432"
+      DB_NAME: postgres_migration_error_dev
       DB_USER: app
       DB_PASSWORD: apppass
     ports:
@@ -55,6 +45,6 @@ services:
       "
 
 volumes:
-  mariadb_data:
+  postgres_data:
   deps:
   build:
