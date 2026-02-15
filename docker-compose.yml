@@ -1,17 +1,50 @@
-version: '3.8'
-
 services:
-  mariadb:
-    image: mariadb:11.2
-    container_name: mysql_migration_error_db
+  db:
+    image: postgres:16
+    container_name: postgres_dev
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mysql_migration_error_dev
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: apppass
+      POSTGRES_DB: postgres_migration_error_dev
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - mariadb_data:/var/lib/mysql
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d postgres_migration_error_dev"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  web:
+    build: .
+    container_name: phoenix_app
+    environment:
+      PHX_SERVER: "true"
+      PORT: "4000"
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_NAME: postgres_migration_error_dev
+      DB_USER: app
+      DB_PASSWORD: apppass
+    ports:
+      - "4000:4000"
+    volumes:
+      - .:/app
+      - deps:/app/deps
+      - build:/app/_build
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -lc "
+        mix deps.get &&
+        mix ecto.create &&
+        mix ecto.migrate &&
+        mix phx.server
+      "
 
 volumes:
-  mariadb_data:
+  postgres_data:
+  deps:
+  build:
