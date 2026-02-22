@@ -43,7 +43,7 @@ defmodule MysqlMigrationErrorPhx.MixProject do
       {:phoenix, "~> 1.8.0"},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.13"},
-      {:myxql, "~> 0.8.0"},
+      {:myxql, path: "/myxql", override: true},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 1.1.0"},
