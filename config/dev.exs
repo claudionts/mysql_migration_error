@@ -1,5 +1,8 @@
 import Config
 
+# Enable debug logging to see MyXQL method call traces
+config :logger, level: :debug
+
 # Configure your database
 config :mysql_migration_error_phx, MysqlMigrationErrorPhx.Repo,
   username: System.get_env("DB_USER", "app"),
